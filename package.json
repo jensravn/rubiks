@@ -1,26 +1,23 @@
 {
-  "name": "rubicscube",
+  "name": "rubiks",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "build": "webpack",
-    "start": "webpack --config webpack.config.ts",
+    "start": "webpack --watch",
     "test": "test"
   },
   "repository": {
     "type": "git",
-    "url": "rubicscube"
+    "url": "rubiks"
   },
   "author": "Jens Ravn Jensen",
   "license": "ISC",
   "devDependencies": {
-    "@types/lodash": "^4.14.92",
     "@types/node": "^8.5.7",
     "@types/three": "^0.89.1",
     "@types/webpack": "^3.8.2",
-    "css-loader": "^0.28.8",
-    "style-loader": "^0.19.1",
     "ts-loader": "^3.2.0",
     "ts-node": "^4.1.0",
     "tslint": "^5.8.0",
@@ -28,7 +25,6 @@
     "webpack": "^3.10.0"
   },
   "dependencies": {
-    "lodash": "^4.17.4",
     "three": "^0.89.0"
   }
 }
