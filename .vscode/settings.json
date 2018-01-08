@@ -3,4 +3,6 @@
     "editor.rulers": [
         120
     ],
+    "tslint.autoFixOnSave": true,
+    "typescript.autoImportSuggestions.enabled": true
 }
