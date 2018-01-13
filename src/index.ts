@@ -1,45 +1,25 @@
-import {
-    BoxGeometry,
-    Mesh,
-    MeshBasicMaterial,
-    PerspectiveCamera,
-    Scene,
-    WebGLRenderer,
-} from "three";
+import { Color, PerspectiveCamera, Scene, WebGLRenderer } from "three";
+import { buildRubiks } from "./build-rubiks";
 
 const scene = new Scene();
 const camera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 const renderer = new WebGLRenderer();
 
+scene.background = new Color(0xffffff);
+camera.position.z = 5;
 renderer.setSize(window.innerWidth, window.innerHeight);
-
 document.body.appendChild(renderer.domElement);
 
-const geometry = new BoxGeometry(0.8, 0.8, 0.8);
-const material = new MeshBasicMaterial({ color: 0xff0000, wireframe: true });
-
-const offset = [-1, 0, 1];
-
-const cube: any = {};
-for (const x of offset) {
-    for (const y of offset) {
-        for (const z of offset) {
-            const key = `cube${x + 1}${y + 1}${z + 1}`;
-            cube[key] = { position: { x, y, z }, mesh: new Mesh(geometry, material) };
-            cube[key].mesh.position.x = x;
-            cube[key].mesh.position.y = y;
-            cube[key].mesh.position.z = z;
-            if (!(x === 0 && y === 0 && z === 0)) {
-                scene.add(cube[key].mesh);
-            }
-        }
-    }
-}
-
-camera.position.z = 5;
+const rubiks = buildRubiks();
+scene.add(rubiks);
 
 const animate = () => {
     requestAnimationFrame(animate);
+
+    rubiks.rotation.x += 0.006;
+    rubiks.rotation.y += 0.004;
+    rubiks.rotation.z += 0.002;
+
     renderer.render(scene, camera);
 };
 
