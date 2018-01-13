@@ -13,12 +13,21 @@ document.body.appendChild(renderer.domElement);
 const rubiks = buildRubiks();
 scene.add(rubiks);
 
+rubiks.rotation.x += 0.5;
+rubiks.rotation.y += 0.5;
+
 const animate = () => {
     requestAnimationFrame(animate);
 
-    rubiks.rotation.x += 0.006;
-    rubiks.rotation.y += 0.004;
-    rubiks.rotation.z += 0.002;
+    rubiks.getChildByName("000").rotation.x += 0.006;
+    rubiks.getChildByName("001").rotation.x += 0.006;
+    rubiks.getChildByName("002").rotation.x += 0.006;
+    rubiks.getChildByName("010").rotation.x += 0.006;
+    rubiks.getChildByName("011").rotation.x += 0.006;
+    rubiks.getChildByName("012").rotation.x += 0.006;
+    rubiks.getChildByName("020").rotation.x += 0.006;
+    rubiks.getChildByName("021").rotation.x += 0.006;
+    rubiks.getChildByName("022").rotation.x += 0.006;
 
     renderer.render(scene, camera);
 };
