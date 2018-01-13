@@ -46063,11 +46063,19 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 var rubiks = build_rubiks_1.buildRubiks();
 scene.add(rubiks);
+rubiks.rotation.x += 0.5;
+rubiks.rotation.y += 0.5;
 var animate = function () {
     requestAnimationFrame(animate);
-    rubiks.rotation.x += 0.006;
-    rubiks.rotation.y += 0.004;
-    rubiks.rotation.z += 0.002;
+    rubiks.getChildByName("000").rotation.x += 0.006;
+    rubiks.getChildByName("001").rotation.x += 0.006;
+    rubiks.getChildByName("002").rotation.x += 0.006;
+    rubiks.getChildByName("010").rotation.x += 0.006;
+    rubiks.getChildByName("011").rotation.x += 0.006;
+    rubiks.getChildByName("012").rotation.x += 0.006;
+    rubiks.getChildByName("020").rotation.x += 0.006;
+    rubiks.getChildByName("021").rotation.x += 0.006;
+    rubiks.getChildByName("022").rotation.x += 0.006;
     renderer.render(scene, camera);
 };
 animate();
@@ -46098,7 +46106,10 @@ exports.buildRubiks = function () {
                     colorize_1.colorize({ x: x, y: y, z: z }, geometry);
                     cube[x][y][z] = new three_1.Mesh(geometry, material);
                     cube[x][y][z].position.set(x - 1, y - 1, z - 1);
-                    rubiks.add(cube[x][y][z]);
+                    var pivot = new three_1.Group();
+                    pivot.name = "" + x + y + z;
+                    pivot.add(cube[x][y][z]);
+                    rubiks.add(pivot);
                 }
             }
         }
