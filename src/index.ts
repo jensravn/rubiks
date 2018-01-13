@@ -1,5 +1,6 @@
 import {
-    BoxGeometry,
+    Color,
+    CubeGeometry,
     Mesh,
     MeshBasicMaterial,
     PerspectiveCamera,
@@ -11,11 +12,11 @@ const scene = new Scene();
 const camera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 const renderer = new WebGLRenderer();
 
+scene.background = new Color(0xffffff);
 renderer.setSize(window.innerWidth, window.innerHeight);
-
 document.body.appendChild(renderer.domElement);
 
-const geometry = new BoxGeometry(0.8, 0.8, 0.8);
+const geometry = new CubeGeometry(0.8, 0.8, 0.8);
 const material = new MeshBasicMaterial({ color: 0xff0000, wireframe: true });
 
 const offset = [-1, 0, 1];
