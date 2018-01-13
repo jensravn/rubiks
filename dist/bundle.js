@@ -60,53 +60,11 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ 	return __webpack_require__(__webpack_require__.s = 1);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var three_1 = __webpack_require__(1);
-var scene = new three_1.Scene();
-var camera = new three_1.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-var renderer = new three_1.WebGLRenderer();
-renderer.setSize(window.innerWidth, window.innerHeight);
-document.body.appendChild(renderer.domElement);
-var geometry = new three_1.BoxGeometry(0.8, 0.8, 0.8);
-var material = new three_1.MeshBasicMaterial({ color: 0xff0000, wireframe: true });
-var offset = [-1, 0, 1];
-var cube = {};
-for (var _i = 0, offset_1 = offset; _i < offset_1.length; _i++) {
-    var x = offset_1[_i];
-    for (var _a = 0, offset_2 = offset; _a < offset_2.length; _a++) {
-        var y = offset_2[_a];
-        for (var _b = 0, offset_3 = offset; _b < offset_3.length; _b++) {
-            var z = offset_3[_b];
-            var key = "cube" + (x + 1) + (y + 1) + (z + 1);
-            cube[key] = { position: { x: x, y: y, z: z }, mesh: new three_1.Mesh(geometry, material) };
-            cube[key].mesh.position.x = x;
-            cube[key].mesh.position.y = y;
-            cube[key].mesh.position.z = z;
-            if (!(x === 0 && y === 0 && z === 0)) {
-                scene.add(cube[key].mesh);
-            }
-        }
-    }
-}
-camera.position.z = 5;
-var animate = function () {
-    requestAnimationFrame(animate);
-    renderer.render(scene, camera);
-};
-animate();
-
-
-/***/ }),
-/* 1 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -46085,6 +46043,144 @@ function CanvasRenderer() {
 }
 
 
+
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var three_1 = __webpack_require__(0);
+var build_rubiks_1 = __webpack_require__(2);
+var scene = new three_1.Scene();
+var camera = new three_1.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+var renderer = new three_1.WebGLRenderer();
+scene.background = new three_1.Color(0xffffff);
+camera.position.z = 5;
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+var rubiks = build_rubiks_1.buildRubiks();
+scene.add(rubiks);
+var animate = function () {
+    requestAnimationFrame(animate);
+    rubiks.rotation.x += 0.006;
+    rubiks.rotation.y += 0.004;
+    rubiks.rotation.z += 0.002;
+    renderer.render(scene, camera);
+};
+animate();
+
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var three_1 = __webpack_require__(0);
+var colorize_1 = __webpack_require__(3);
+exports.buildRubiks = function () {
+    var offset = [0, 1, 2];
+    var rubiks = new three_1.Group();
+    var cube = [[[], [], []], [[], [], []], [[], [], []]];
+    for (var _i = 0, offset_1 = offset; _i < offset_1.length; _i++) {
+        var x = offset_1[_i];
+        for (var _a = 0, offset_2 = offset; _a < offset_2.length; _a++) {
+            var y = offset_2[_a];
+            for (var _b = 0, offset_3 = offset; _b < offset_3.length; _b++) {
+                var z = offset_3[_b];
+                if (x !== 1 || y !== 1 || z !== 1) {
+                    var geometry = new three_1.BoxGeometry(0.95, 0.95, 0.95);
+                    var material = new three_1.MeshBasicMaterial({ color: 0xffffff, vertexColors: three_1.FaceColors });
+                    colorize_1.colorize({ x: x, y: y, z: z }, geometry);
+                    cube[x][y][z] = new three_1.Mesh(geometry, material);
+                    cube[x][y][z].position.set(x - 1, y - 1, z - 1);
+                    rubiks.add(cube[x][y][z]);
+                }
+            }
+        }
+    }
+    return rubiks;
+};
+
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var colors_1 = __webpack_require__(4);
+exports.colorize = function (_a, geometry) {
+    var x = _a.x, y = _a.y, z = _a.z;
+    geometry.faces.forEach(function (f) {
+        f.color.setHex(colors_1.colors.black);
+    });
+    if (x === 0) {
+        geometry.faces.forEach(function (f, i) {
+            if (i === 2 || i === 3) {
+                f.color.setHex(colors_1.colors.red);
+            }
+        });
+    }
+    if (x === 2) {
+        geometry.faces.forEach(function (f, i) {
+            if (i === 0 || i === 1) {
+                f.color.setHex(colors_1.colors.orange);
+            }
+        });
+    }
+    if (y === 0) {
+        geometry.faces.forEach(function (f, i) {
+            if (i === 6 || i === 7) {
+                f.color.setHex(colors_1.colors.green);
+            }
+        });
+    }
+    if (y === 2) {
+        geometry.faces.forEach(function (f, i) {
+            if (i === 4 || i === 5) {
+                f.color.setHex(colors_1.colors.blue);
+            }
+        });
+    }
+    if (z === 0) {
+        geometry.faces.forEach(function (f, i) {
+            if (i === 10 || i === 11) {
+                f.color.setHex(colors_1.colors.white);
+            }
+        });
+    }
+    if (z === 2) {
+        geometry.faces.forEach(function (f, i) {
+            if (i === 8 || i === 9) {
+                f.color.setHex(colors_1.colors.yellow);
+            }
+        });
+    }
+};
+
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.colors = {
+    red: 0xF21634,
+    blue: 0x0E64D0,
+    green: 0x01C117,
+    yellow: 0xFFFE01,
+    orange: 0xDF6F1D,
+    white: 0xF0F0F0,
+    black: 0x222222,
+};
 
 
 /***/ })
