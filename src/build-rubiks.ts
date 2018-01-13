@@ -14,6 +14,7 @@ export const buildRubiks = () => {
                     colorize({ x, y, z }, geometry);
                     cube[x][y][z] = new Mesh(geometry, material);
                     cube[x][y][z].position.set(x - 1, y - 1, z - 1);
+                    cube[x][y][z].name = `${x}${y}${z}`;
                     rubiks.add(cube[x][y][z]);
                 }
             }
