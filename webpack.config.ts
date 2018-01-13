@@ -3,6 +3,9 @@ import * as webpack from "webpack";
 
 const config: webpack.Configuration = {
     entry: "./src/index.ts",
+    devServer: {
+        contentBase: ".",
+    },
     module: {
         rules: [
             {

@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "webpack",
-    "start": "webpack --watch",
-    "test": "test"
+    "start": "webpack-dev-server --open"
   },
   "repository": {
     "type": "git",
@@ -22,7 +21,8 @@
     "ts-node": "^4.1.0",
     "tslint": "^5.8.0",
     "typescript": "^2.6.2",
-    "webpack": "^3.10.0"
+    "webpack": "^3.10.0",
+    "webpack-dev-server": "^2.10.1"
   },
   "dependencies": {
     "three": "^0.89.0"
