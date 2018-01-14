@@ -1,7 +1,8 @@
 import { Geometry } from "three";
 import { colors } from "./colors";
+import { IPosition } from "./i-position";
 
-export const colorize = ({ x, y, z }: { x: any, y: any, z: any }, geometry: Geometry) => {
+export const colorize = ({ x, y, z }: IPosition, geometry: Geometry) => {
     geometry.faces.forEach((f) => {
         f.color.setHex(colors.black);
     });
