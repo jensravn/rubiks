@@ -1,7 +1,8 @@
 import { Color, Math, PerspectiveCamera, Scene, WebGLRenderer } from "three";
-import { autoResize } from "./autoResize";
+import { autoResize } from "./auto-resize";
 import { Axis } from "./axis";
 import { buildRubiks } from "./build-rubiks";
+import { onClickObject } from "./on-click-object";
 import { rotateLayer } from "./rotate-layer";
 
 const scene = new Scene();
@@ -30,3 +31,5 @@ const animate = () => {
 animate();
 
 autoResize(renderer, camera);
+
+onClickObject(renderer, camera, scene);

@@ -12,6 +12,7 @@ export const buildRubiks = () => {
                 const material = new MeshBasicMaterial({ color: 0xffffff, vertexColors: FaceColors });
                 colorize({ x, y, z }, geometry);
                 const mesh = new Mesh(geometry, material);
+                mesh.name = `mesh${x}${y}${z}`;
                 mesh.position.set(x - 1, y - 1, z - 1);
                 field[x][y][z] = new Group();
                 field[x][y][z].add(mesh);
