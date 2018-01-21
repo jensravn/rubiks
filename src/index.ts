@@ -32,4 +32,4 @@ animate();
 
 autoResize(renderer, camera);
 
-onClickObject(renderer, camera, scene);
+onClickObject(renderer, camera, scene, rubiks.field);
