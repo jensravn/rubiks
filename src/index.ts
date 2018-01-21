@@ -7,7 +7,7 @@ const scene = new Scene();
 const camera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 const renderer = new WebGLRenderer();
 
-scene.background = new Color(0xffffff);
+scene.background = new Color(0xEFEFEF);
 camera.position.z = 7;
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
