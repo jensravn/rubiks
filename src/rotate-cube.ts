@@ -1,5 +1,10 @@
-import { Group, Math, Vector3 } from "three";
+import { Group, Math, Quaternion, Vector3 } from "three";
 import { Axis, AxisValue, flip } from "./axis";
+
+const quaternion = new Quaternion();
+const axisX = new Vector3(1, 0, 0);
+const axisY = new Vector3(0, 1, 0);
+const axisZ = new Vector3(0, 0, 1);
 
 export const rotateCube = (
     field: Group[][][],
@@ -12,18 +17,18 @@ export const rotateCube = (
 ) => {
     const rotationValue = clockWise ? Math.degToRad(90) : Math.degToRad(-10);
     if (axis === Axis.x) {
-        field[layer][i1][i2].quaternion.setFromAxisAngle(new Vector3(1, 0, 0), rotationValue);
-        field[layer][i1][i2].setRotationFromQuaternion(field[layer][i1][i2].quaternion);
+        quaternion.setFromAxisAngle(axisX, rotationValue);
+        field[layer][i1][i2].quaternion.premultiply(quaternion);
         auxFieldLayer[flip(i2)][i1] = field[layer][i1][i2];
     }
     if (axis === Axis.y) {
-        field[i1][layer][i2].quaternion.setFromAxisAngle(new Vector3(0, 1, 0), rotationValue);
-        field[i1][layer][i2].setRotationFromQuaternion(field[i1][layer][i2].quaternion);
+        quaternion.setFromAxisAngle(axisY, rotationValue);
+        field[i1][layer][i2].quaternion.premultiply(quaternion);
         auxFieldLayer[flip(i2)][i1] = field[i1][layer][i2];
     }
     if (axis === Axis.z) {
-        field[i1][i2][layer].quaternion.setFromAxisAngle(new Vector3(0, 0, 1), rotationValue);
-        field[i1][i2][layer].setRotationFromQuaternion(field[i1][i2][layer].quaternion);
+        quaternion.setFromAxisAngle(axisZ, rotationValue);
+        field[i1][i2][layer].quaternion.premultiply(quaternion);
         auxFieldLayer[flip(i2)][i1] = field[i1][i2][layer];
     }
     return auxFieldLayer;
