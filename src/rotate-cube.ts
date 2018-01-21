@@ -15,7 +15,7 @@ export const rotateCube = (
     i1: AxisValue,
     i2: AxisValue,
 ) => {
-    const rotationValue = clockWise ? Math.degToRad(90) : Math.degToRad(-10);
+    const rotationValue = clockWise ? Math.degToRad(90) : Math.degToRad(-90);
     if (axis === Axis.x) {
         quaternion.setFromAxisAngle(axisX, rotationValue);
         field[layer][i1][i2].quaternion.premultiply(quaternion);
