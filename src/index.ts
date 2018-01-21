@@ -1,4 +1,5 @@
 import { Color, Math, PerspectiveCamera, Scene, WebGLRenderer } from "three";
+import { autoResize } from "./autoResize";
 import { Axis } from "./axis";
 import { buildRubiks } from "./build-rubiks";
 import { rotateLayer } from "./rotate-layer";
@@ -27,3 +28,5 @@ const animate = () => {
 };
 
 animate();
+
+autoResize(renderer, camera);
