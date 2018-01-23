@@ -24,40 +24,53 @@ const clickObjectHandler = (event: any) => {
     const intersects = raycaster.intersectObjects(scene.children, true);
     if (intersects.length > 0) {
         const iterator = [0, 1, 2];
+        let axis = Axis.x;
+        let clockWize = true;
+        let layer = 0 as AxisValue;
+        let rotate = false;
+
         for (const x of iterator) {
             for (const y of iterator) {
                 for (const z of iterator) {
-                    if (intersects[0].object.name === `mesh${x}${y}${z}`) {
+                    if (field[x][y][z].children[0].name === intersects[0].object.name) {
+                        // tslint:disable-next-line:no-console
+                        console.log(`position: ${x}${y}${z}`);
                         // tslint:disable-next-line:no-console
                         console.log("field: " + field[x][y][z].children[0].name);
                         // tslint:disable-next-line:no-console
                         console.log("intersects: " + intersects[0].object.name);
 
-                        let axis = Axis.x;
-                        let clockWize = true;
-                        let layer = 0 as AxisValue;
 
                         if (x === 0 && y === 0) {
+                            // tslint:disable-next-line:no-console
+                            console.log("00z");
                             axis = Axis.z;
                             clockWize = true;
                             layer = z as AxisValue;
-                            rotateLayer(field, axis, clockWize, layer);
+                            rotate = true;
                         }
                         if (x === 2 && z === 2) {
+                            // tslint:disable-next-line:no-console
+                            console.log("2y2");
                             axis = Axis.y;
                             clockWize = true;
                             layer = y as AxisValue;
-                            rotateLayer(field, axis, clockWize, layer);
+                            rotate = true;
                         }
                         if (y === 2 && z === 0) {
+                            // tslint:disable-next-line:no-console
+                            console.log("x20");
                             axis = Axis.x;
                             clockWize = false;
                             layer = x as AxisValue;
-                            rotateLayer(field, axis, clockWize, layer);
+                            rotate = true;
                         }
                     }
                 }
             }
+        }
+        if (rotate) {
+            rotateLayer(field, axis, clockWize, layer);
         }
     }
 };
