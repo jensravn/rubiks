@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 1);
+/******/ 	return __webpack_require__(__webpack_require__.s = 3);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -46052,33 +46052,13 @@ function CanvasRenderer() {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var three_1 = __webpack_require__(0);
-var build_rubiks_1 = __webpack_require__(2);
-var scene = new three_1.Scene();
-var camera = new three_1.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-var renderer = new three_1.WebGLRenderer();
-scene.background = new three_1.Color(0xffffff);
-camera.position.z = 5;
-renderer.setSize(window.innerWidth, window.innerHeight);
-document.body.appendChild(renderer.domElement);
-var rubiks = build_rubiks_1.buildRubiks();
-scene.add(rubiks);
-rubiks.rotation.x += 0.5;
-rubiks.rotation.y += 0.5;
-var animate = function () {
-    requestAnimationFrame(animate);
-    rubiks.getChildByName("000").rotation.x += 0.006;
-    rubiks.getChildByName("001").rotation.x += 0.006;
-    rubiks.getChildByName("002").rotation.x += 0.006;
-    rubiks.getChildByName("010").rotation.x += 0.006;
-    rubiks.getChildByName("011").rotation.x += 0.006;
-    rubiks.getChildByName("012").rotation.x += 0.006;
-    rubiks.getChildByName("020").rotation.x += 0.006;
-    rubiks.getChildByName("021").rotation.x += 0.006;
-    rubiks.getChildByName("022").rotation.x += 0.006;
-    renderer.render(scene, camera);
-};
-animate();
+var Axis;
+(function (Axis) {
+    Axis[Axis["x"] = 0] = "x";
+    Axis[Axis["y"] = 1] = "y";
+    Axis[Axis["z"] = 2] = "z";
+})(Axis = exports.Axis || (exports.Axis = {}));
+exports.flip = function (axisValue) { return axisValue === 2 ? 0 : axisValue === 0 ? 2 : 1; };
 
 
 /***/ }),
@@ -46088,33 +46068,42 @@ animate();
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var three_1 = __webpack_require__(0);
-var colorize_1 = __webpack_require__(3);
-exports.buildRubiks = function () {
-    var offset = [0, 1, 2];
-    var rubiks = new three_1.Group();
-    var cube = [[[], [], []], [[], [], []], [[], [], []]];
-    for (var _i = 0, offset_1 = offset; _i < offset_1.length; _i++) {
-        var x = offset_1[_i];
-        for (var _a = 0, offset_2 = offset; _a < offset_2.length; _a++) {
-            var y = offset_2[_a];
-            for (var _b = 0, offset_3 = offset; _b < offset_3.length; _b++) {
-                var z = offset_3[_b];
-                if (x !== 1 || y !== 1 || z !== 1) {
-                    var geometry = new three_1.BoxGeometry(0.95, 0.95, 0.95);
-                    var material = new three_1.MeshBasicMaterial({ color: 0xffffff, vertexColors: three_1.FaceColors });
-                    colorize_1.colorize({ x: x, y: y, z: z }, geometry);
-                    cube[x][y][z] = new three_1.Mesh(geometry, material);
-                    cube[x][y][z].position.set(x - 1, y - 1, z - 1);
-                    var pivot = new three_1.Group();
-                    pivot.name = "" + x + y + z;
-                    pivot.add(cube[x][y][z]);
-                    rubiks.add(pivot);
-                }
+var axis_1 = __webpack_require__(1);
+var rotate_cube_1 = __webpack_require__(9);
+exports.rotateLayer = function (field, axis, clockWise, layer) {
+    var auxFieldLayer = [[], [], []];
+    var iterator = [0, 1, 2];
+    for (var _i = 0, iterator_1 = iterator; _i < iterator_1.length; _i++) {
+        var i1 = iterator_1[_i];
+        for (var _a = 0, iterator_2 = iterator; _a < iterator_2.length; _a++) {
+            var i2 = iterator_2[_a];
+            if (axis === axis_1.Axis.x) {
+                auxFieldLayer = rotate_cube_1.rotateCube(field, auxFieldLayer, axis, clockWise, layer, i1, i2);
+            }
+            if (axis === axis_1.Axis.y) {
+                auxFieldLayer = rotate_cube_1.rotateCube(field, auxFieldLayer, axis, clockWise, layer, i1, i2);
+            }
+            if (axis === axis_1.Axis.z) {
+                auxFieldLayer = rotate_cube_1.rotateCube(field, auxFieldLayer, axis, clockWise, layer, i1, i2);
             }
         }
     }
-    return rubiks;
+    for (var _b = 0, iterator_3 = iterator; _b < iterator_3.length; _b++) {
+        var i1 = iterator_3[_b];
+        for (var _c = 0, iterator_4 = iterator; _c < iterator_4.length; _c++) {
+            var i2 = iterator_4[_c];
+            if (axis === axis_1.Axis.x) {
+                field[layer][i1][i2] = auxFieldLayer[i1][i2];
+            }
+            if (axis === axis_1.Axis.y) {
+                field[i1][layer][i2] = auxFieldLayer[i1][i2];
+            }
+            if (axis === axis_1.Axis.z) {
+                field[i1][i2][layer] = auxFieldLayer[i1][i2];
+            }
+        }
+    }
+    return field;
 };
 
 
@@ -46125,7 +46114,99 @@ exports.buildRubiks = function () {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var colors_1 = __webpack_require__(4);
+var three_1 = __webpack_require__(0);
+var auto_resize_1 = __webpack_require__(4);
+var axis_1 = __webpack_require__(1);
+var build_rubiks_1 = __webpack_require__(5);
+var on_click_object_1 = __webpack_require__(8);
+var rotate_layer_1 = __webpack_require__(2);
+var scene = new three_1.Scene();
+var camera = new three_1.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+var renderer = new three_1.WebGLRenderer();
+scene.background = new three_1.Color(0xEFEFEF);
+camera.position.z = 7;
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+var rubiks = build_rubiks_1.buildRubiks();
+scene.add(rubiks.rubiks);
+rubiks.rubiks.rotation.x += three_1.Math.degToRad(35);
+rubiks.rubiks.rotation.y += three_1.Math.degToRad(45);
+rubiks.field = rotate_layer_1.rotateLayer(rubiks.field, axis_1.Axis.x, true, 0);
+rubiks.field = rotate_layer_1.rotateLayer(rubiks.field, axis_1.Axis.z, false, 2);
+var animate = function () {
+    requestAnimationFrame(animate);
+    renderer.render(scene, camera);
+};
+animate();
+auto_resize_1.autoResize(renderer, camera);
+on_click_object_1.onClickObject(renderer, camera, scene, rubiks.field);
+
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var renderer;
+var camera;
+exports.autoResize = function (r, c) {
+    renderer = r;
+    camera = c;
+    window.addEventListener("resize", onWindowResize, false);
+};
+var onWindowResize = function () {
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+};
+window.addEventListener("resize", onWindowResize, false);
+
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var three_1 = __webpack_require__(0);
+var colorize_1 = __webpack_require__(6);
+exports.buildRubiks = function () {
+    var iterator = [0, 1, 2];
+    var rubiks = new three_1.Group();
+    var field = [[[], [], []], [[], [], []], [[], [], []]];
+    for (var _i = 0, iterator_1 = iterator; _i < iterator_1.length; _i++) {
+        var x = iterator_1[_i];
+        for (var _a = 0, iterator_2 = iterator; _a < iterator_2.length; _a++) {
+            var y = iterator_2[_a];
+            for (var _b = 0, iterator_3 = iterator; _b < iterator_3.length; _b++) {
+                var z = iterator_3[_b];
+                var geometry = new three_1.BoxGeometry(0.95, 0.95, 0.95);
+                var material = new three_1.MeshBasicMaterial({ color: 0xffffff, vertexColors: three_1.FaceColors });
+                colorize_1.colorize({ x: x, y: y, z: z }, geometry);
+                var mesh = new three_1.Mesh(geometry, material);
+                mesh.name = "mesh" + x + y + z;
+                mesh.position.set(x - 1, y - 1, z - 1);
+                field[x][y][z] = new three_1.Group();
+                field[x][y][z].add(mesh);
+                rubiks.add(field[x][y][z]);
+            }
+        }
+    }
+    return { field: field, rubiks: rubiks };
+};
+
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var colors_1 = __webpack_require__(7);
 exports.colorize = function (_a, geometry) {
     var x = _a.x, y = _a.y, z = _a.z;
     geometry.faces.forEach(function (f) {
@@ -46177,20 +46258,151 @@ exports.colorize = function (_a, geometry) {
 
 
 /***/ }),
-/* 4 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.colors = {
-    red: 0xF21634,
+    black: 0x222222,
     blue: 0x0E64D0,
     green: 0x01C117,
-    yellow: 0xFFFE01,
     orange: 0xDF6F1D,
-    white: 0xF0F0F0,
-    black: 0x222222,
+    red: 0xF21634,
+    white: 0xFFFFFF,
+    yellow: 0xFFFE01,
+};
+
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var three_1 = __webpack_require__(0);
+var axis_1 = __webpack_require__(1);
+var rotate_layer_1 = __webpack_require__(2);
+var raycaster = new three_1.Raycaster();
+var mouse = new three_1.Vector2();
+var renderer;
+var camera;
+var scene;
+var field;
+exports.onClickObject = function (r, c, s, f) {
+    renderer = r;
+    camera = c;
+    scene = s;
+    field = f;
+    renderer.domElement.addEventListener("click", clickObjectHandler, true);
+};
+var clickObjectHandler = function (event) {
+    mouse.x = (event.clientX / renderer.domElement.clientWidth) * 2 - 1;
+    mouse.y = -(event.clientY / renderer.domElement.clientHeight) * 2 + 1;
+    raycaster.setFromCamera(mouse, camera);
+    var intersects = raycaster.intersectObjects(scene.children, true);
+    if (intersects.length > 0) {
+        var iterator = [0, 1, 2];
+        var axis = axis_1.Axis.x;
+        var clockWize = true;
+        var layer = 0;
+        var rotate = false;
+        for (var _i = 0, iterator_1 = iterator; _i < iterator_1.length; _i++) {
+            var x = iterator_1[_i];
+            for (var _a = 0, iterator_2 = iterator; _a < iterator_2.length; _a++) {
+                var y = iterator_2[_a];
+                for (var _b = 0, iterator_3 = iterator; _b < iterator_3.length; _b++) {
+                    var z = iterator_3[_b];
+                    if (field[x][y][z].children[0].name === intersects[0].object.name) {
+                        // tslint:disable-next-line:no-console
+                        console.log("position: " + x + y + z);
+                        // tslint:disable-next-line:no-console
+                        console.log("field: " + field[x][y][z].children[0].name);
+                        // tslint:disable-next-line:no-console
+                        console.log("intersects: " + intersects[0].object.name);
+                        if (x === 0 && y === 0) {
+                            // tslint:disable-next-line:no-console
+                            console.log("00z");
+                            axis = axis_1.Axis.z;
+                            clockWize = true;
+                            layer = z;
+                            rotate = true;
+                        }
+                        if (x === 2 && z === 2) {
+                            // tslint:disable-next-line:no-console
+                            console.log("2y2");
+                            axis = axis_1.Axis.y;
+                            clockWize = true;
+                            layer = y;
+                            rotate = true;
+                        }
+                        if (y === 2 && z === 0) {
+                            // tslint:disable-next-line:no-console
+                            console.log("x20");
+                            axis = axis_1.Axis.x;
+                            clockWize = false;
+                            layer = x;
+                            rotate = true;
+                        }
+                    }
+                }
+            }
+        }
+        if (rotate) {
+            rotate_layer_1.rotateLayer(field, axis, clockWize, layer);
+        }
+    }
+};
+
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var three_1 = __webpack_require__(0);
+var axis_1 = __webpack_require__(1);
+var quaternion = new three_1.Quaternion();
+var axisX = new three_1.Vector3(1, 0, 0);
+var axisY = new three_1.Vector3(0, 1, 0);
+var axisZ = new three_1.Vector3(0, 0, 1);
+exports.rotateCube = function (field, auxFieldLayer, axis, clockWise, layer, i1, i2) {
+    var rotationValue = clockWise ? three_1.Math.degToRad(90) : three_1.Math.degToRad(-90);
+    if (axis === axis_1.Axis.x) {
+        quaternion.setFromAxisAngle(axisX, rotationValue);
+        field[layer][i1][i2].quaternion.premultiply(quaternion);
+        if (clockWise) {
+            auxFieldLayer[axis_1.flip(i2)][i1] = field[layer][i1][i2];
+        }
+        else {
+            auxFieldLayer[i2][axis_1.flip(i1)] = field[layer][i1][i2];
+        }
+    }
+    if (axis === axis_1.Axis.y) {
+        quaternion.setFromAxisAngle(axisY, rotationValue);
+        field[i1][layer][i2].quaternion.premultiply(quaternion);
+        if (clockWise) {
+            auxFieldLayer[i2][axis_1.flip(i1)] = field[i1][layer][i2];
+        }
+        else {
+            auxFieldLayer[axis_1.flip(i2)][i1] = field[i1][layer][i2];
+        }
+    }
+    if (axis === axis_1.Axis.z) {
+        quaternion.setFromAxisAngle(axisZ, rotationValue);
+        field[i1][i2][layer].quaternion.premultiply(quaternion);
+        if (clockWise) {
+            auxFieldLayer[axis_1.flip(i2)][i1] = field[i1][i2][layer];
+        }
+        else {
+            auxFieldLayer[i2][axis_1.flip(i1)] = field[i1][i2][layer];
+        }
+    }
+    return auxFieldLayer;
 };
 
 
