@@ -19,17 +19,29 @@ export const rotateCube = (
     if (axis === Axis.x) {
         quaternion.setFromAxisAngle(axisX, rotationValue);
         field[layer][i1][i2].quaternion.premultiply(quaternion);
-        auxFieldLayer[flip(i2)][i1] = field[layer][i1][i2];
+        if (clockWise) {
+            auxFieldLayer[flip(i2)][i1] = field[layer][i1][i2];
+        } else {
+            auxFieldLayer[i2][flip(i1)] = field[layer][i1][i2];
+        }
     }
     if (axis === Axis.y) {
         quaternion.setFromAxisAngle(axisY, rotationValue);
         field[i1][layer][i2].quaternion.premultiply(quaternion);
-        auxFieldLayer[flip(i2)][i1] = field[i1][layer][i2];
+        if (clockWise) {
+            auxFieldLayer[i2][flip(i1)] = field[i1][layer][i2];
+        } else {
+            auxFieldLayer[flip(i2)][i1] = field[i1][layer][i2];
+        }
     }
     if (axis === Axis.z) {
         quaternion.setFromAxisAngle(axisZ, rotationValue);
         field[i1][i2][layer].quaternion.premultiply(quaternion);
-        auxFieldLayer[flip(i2)][i1] = field[i1][i2][layer];
+        if (clockWise) {
+            auxFieldLayer[flip(i2)][i1] = field[i1][i2][layer];
+        } else {
+            auxFieldLayer[i2][flip(i1)] = field[i1][i2][layer];
+        }
     }
     return auxFieldLayer;
 };
